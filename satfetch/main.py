@@ -52,8 +52,8 @@ def main(scenes, aoi, datadir='./', bands=None):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     gippy.Options.set_verbose(3)
+    opts = {'COMPRESS': 'DEFLATE', 'PREDICTOR': '2', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     for date in scenes.dates():
-
         _scenes = [s for s in scenes if s.date == date]
         #import pdb; pdb.set_trace()
         geoimgs = []
@@ -67,10 +67,11 @@ def main(scenes, aoi, datadir='./', bands=None):
             geoimgs.append(geoimg)
         outname = '%s_%s.tif' % (s.date, s.platform)
         fout = os.path.join(outdir, outname)
+        
         if not os.path.exists(fout):
             # default to first image res and srs
             res = geoimgs[0].resolution()
-            imgout = algs.cookie_cutter(geoimgs, fout, features[0], xres=res.x(), yres=res.y(), proj=geoimgs[0].srs())
+            imgout = algs.cookie_cutter(geoimgs, fout, features[0], xres=res.x(), yres=res.y(), proj=geoimgs[0].srs(), options=opts)
 
 
 def cli():
