@@ -52,7 +52,8 @@ def main(scenes, aoi, datadir='./', bands=None):
     if not os.path.exists(outdir):
         os.makedirs(outdir)
     gippy.Options.set_verbose(3)
-    opts = {'COMPRESS': 'DEFLATE', 'PREDICTOR': '2', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
+    #opts = {'COMPRESS': 'DEFLATE', 'PREDICTOR': '2', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
+    opts = {'COMPRESS': 'LZW', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     for date in scenes.dates():
         _scenes = [s for s in scenes if s.date == date]
         #import pdb; pdb.set_trace()
