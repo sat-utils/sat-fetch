@@ -48,13 +48,12 @@ def main(scenes, aoi, datadir='./', bands=None):
 
     features = gippy.GeoVector(aoi)
 
-    outdir = os.path.join(datadir, bname)
-    if not os.path.exists(outdir):
-        os.makedirs(outdir)
-    gippy.Options.set_verbose(3)
+    if not os.path.exists(datadir):
+        os.makedirs(datadir)
+    gippy.Options.set_verbose(5)
     #opts = {'COMPRESS': 'DEFLATE', 'PREDICTOR': '2', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     #opts = {'COMPRESS': 'LZW', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
-    opts = {}
+    opts = {'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     for date in scenes.dates():
         _scenes = [s for s in scenes if s.date == date]
         #import pdb; pdb.set_trace()
@@ -68,11 +67,12 @@ def main(scenes, aoi, datadir='./', bands=None):
             geoimg.set_nodata(0)
             geoimgs.append(geoimg)
         outname = '%s_%s.tif' % (s.date, s.platform)
-        fout = os.path.join(outdir, outname)
+        fout = os.path.join(datadir, outname)
         
         if not os.path.exists(fout):
             # default to first image res and srs
             res = geoimgs[0].resolution()
+            import pdb; pdb.set_trace()
             imgout = algs.cookie_cutter(geoimgs, fout, features[0], xres=res.x(), yres=res.y(), proj=geoimgs[0].srs(), options=opts)
 
 
