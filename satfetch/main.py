@@ -72,7 +72,6 @@ def main(scenes, aoi, datadir='./', bands=None):
         if not os.path.exists(fout):
             # default to first image res and srs
             res = geoimgs[0].resolution()
-            import pdb; pdb.set_trace()
             imgout = algs.cookie_cutter(geoimgs, fout, features[0], xres=res.x(), yres=res.y(), proj=geoimgs[0].srs(), options=opts)
 
 
