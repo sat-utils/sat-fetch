@@ -1,4 +1,4 @@
 six==1.10.0
 requests==2.11
 satsearch~=0.1.0
-gippy~=1.0.0
+gippy==1.0.1b3
