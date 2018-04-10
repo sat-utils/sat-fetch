@@ -56,7 +56,7 @@ def main(scenes, aoi, datadir='./', bands=None):
     opts = {'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     for date in scenes.dates():
         _scenes = [s for s in scenes if s.date == date]
-        outname = '%s_%s.tif' % (s.date, s.platform)
+        outname = '%s_%s.tif' % (_scenes[0].date, _scenes[0].platform)
         fout = os.path.join(datadir, outname)
         
         if not os.path.exists(fout):
