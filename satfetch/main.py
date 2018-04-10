@@ -60,19 +60,22 @@ def main(scenes, aoi, datadir='./', bands=None):
         fout = os.path.join(datadir, outname)
         
         if not os.path.exists(fout):
-            geoimgs = []
-            for s in _scenes:
-                links = s.links()
-                if bands is None:
-                    bands = links.keys()
-                filenames = [links[k].replace('https:/', '/vsicurl') for k in sorted(links) if k in bands]
-                geoimg = gippy.GeoImage.open(filenames)
-                geoimg.set_nodata(0)
-                geoimgs.append(geoimg)
+            try:
+                geoimgs = []
+                for s in _scenes:
+                    links = s.links()
+                    if bands is None:
+                        bands = links.keys()
+                    filenames = [links[k].replace('https:/', '/vsicurl') for k in sorted(links) if k in bands]
+                    geoimg = gippy.GeoImage.open(filenames)
+                    geoimg.set_nodata(0)
+                    geoimgs.append(geoimg)
 
-            # default to first image res and srs
-            res = geoimgs[0].resolution()
-            imgout = algs.cookie_cutter(geoimgs, fout, features[0], xres=res.x(), yres=res.y(), proj=geoimgs[0].srs(), options=opts)
+                # default to first image res and srs
+                res = geoimgs[0].resolution()
+                imgout = algs.cookie_cutter(geoimgs, fout, features[0], xres=res.x(), yres=res.y(), proj=geoimgs[0].srs(), options=opts)
+            except Exception as err:
+                print('Error: ', str(err))
 
 
 def cli():
