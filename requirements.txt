@@ -1,2 +1,2 @@
-satsearch~=1.0.0b7
+satsearch~=1.0.0b12
 gippy~=1.0.1b1
