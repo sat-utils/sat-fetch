@@ -32,6 +32,27 @@ class SatFetchParser(SatUtilsParser):
         self.download_group.add_argument('--separate', help='Do not combine bands into files', action='store_true', default=False)
 
 
+def derived_stac_item(items):
+    """ Create a derived STAC item from these """
+    # data provenance, iterate through links
+    links = {'parent-%s' % i: i['link']['self'] for i, item in enumerate(items)}
+    # calculate composite geometry and bbox
+    # properties
+    props = items[0]['properties']
+    props = {
+        'id': '--'.join([i['properties'] for i in items]),
+        'datetime': items[0]['properties']['datetime'],
+    }
+    item = {
+        'properties': props,
+        'bbox': bbox,
+        'geometry': geom,
+        'links': links,
+        'assets': {}
+    }
+    return item
+
+
 def main(scenes=None, review=False, print_md=None, print_cal=False,
          save=None, append=False, download=None, **kwargs):
     """ Main function for performing a search """
@@ -73,7 +94,7 @@ def main(scenes=None, review=False, print_md=None, print_cal=False,
     #opts = {'COMPRESS': 'DEFLATE', 'PREDICTOR': '2', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     #opts = {'COMPRESS': 'LZW', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     opts = {'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
-    for date in scenes.dates():
+    for date in scenes.dates()[0:1]:
         _scenes = [s for s in scenes if s.date == date]
         # TODO - seperate out by platform
 
@@ -87,7 +108,8 @@ def main(scenes=None, review=False, print_md=None, print_cal=False,
                 with tempfile.TemporaryDirectory() as outdir:
                     geoimgs = []
                     for s in _scenes:
-                        geoimgs.append(make_vrt(s, download, outdir=outdir))
+                        geoimgs.append(make_vrt(s, download, outdir='./'))
+                        #geoimgs.append(open_image(s, download))
 
                     # default to first image res and srs
                     res = geoimgs[0].resolution()
@@ -97,13 +119,28 @@ def main(scenes=None, review=False, print_md=None, print_cal=False,
                 print('Error: ', str(err))
 
 
+def open_image(scene, keys=None, download=False):
+    print('opening image')
+    if keys is None:
+        keys = scene.name_to_band.keys()
+    assets = [scene.asset(k) for k in keys]
+    filenames = [a['href'] for a in assets]
+    geoimg = gippy.GeoImage.open(filenames)
+    if download:
+        geoimg = geoimg.save('test.tif')
+        geoimg = None
+        return gippy.GeoImage('test.tif')
+    else:
+        return geoimg
+
+
 def make_vrt(scene, keys=None, outdir='./'):
     """ Build a VRT from these assets """
     if keys is None:
         keys = scene.name_to_band.keys()
     assets = [scene.asset(k) for k in keys]
-    fout = os.path.join(outdir, os.path.abspath(scene.id + '.vrt'))
     filenames = [a['href'] for a in assets]
+    fout = os.path.join(outdir, scene.id + '.vrt')
     gdal.BuildVRT(fout, filenames, separate=True, srcNodata=0)
     geoimg = gippy.GeoImage(fout)
     return geoimg
