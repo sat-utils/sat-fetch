@@ -1,0 +1,19 @@
+version: '2'
+
+services:
+
+  base:
+    build:
+      context: .
+    image: 'developmentseed/sat-fetch:latest'
+    entrypoint: /bin/bash
+    #env_file: .env
+    volumes:
+      - '.:/home/geolambda/work'
+
+  test:
+    image: 'developmentseed/sat-fetch:latest'
+    entrypoint: bash -c 'pytest test/'
+    #env_file: .env
+    volumes:
+      - './test:/home/geolambda/test'
