@@ -1,4 +1,4 @@
-FROM developmentseed/geolambda:latest
+FROM developmentseed/geolambda:1.0.0
 
 # install requirements
 WORKDIR /build
