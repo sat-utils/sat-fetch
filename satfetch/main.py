@@ -94,7 +94,7 @@ def main(scenes=None, review=False, print_md=None, print_cal=False,
     #opts = {'COMPRESS': 'DEFLATE', 'PREDICTOR': '2', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     #opts = {'COMPRESS': 'LZW', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     opts = {'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
-    for date in scenes.dates()[0:1]:
+    for date in scenes.dates():
         _scenes = [s for s in scenes if s.date == date]
         # TODO - seperate out by platform
 
@@ -108,8 +108,7 @@ def main(scenes=None, review=False, print_md=None, print_cal=False,
                 with tempfile.TemporaryDirectory() as outdir:
                     geoimgs = []
                     for s in _scenes:
-                        geoimgs.append(make_vrt(s, download, outdir='./'))
-                        #geoimgs.append(open_image(s, download))
+                        geoimgs.append(open_image(s, download))
 
                     # default to first image res and srs
                     res = geoimgs[0].resolution()
@@ -124,26 +123,15 @@ def open_image(scene, keys=None, download=False):
     if keys is None:
         keys = scene.name_to_band.keys()
     assets = [scene.asset(k) for k in keys]
-    filenames = [a['href'] for a in assets]
+    filenames = [a['href'].replace('https:/', '/vsicurl/https:/') for a in assets]
     geoimg = gippy.GeoImage.open(filenames)
+    geoimg.set_nodata(0)
     if download:
-        geoimg = geoimg.save('test.tif')
-        geoimg = None
-        return gippy.GeoImage('test.tif')
+        # download scenes first
+        fnames = scene.download(keys)
+        return gippy.GeoImage.open(fnames)
     else:
         return geoimg
-
-
-def make_vrt(scene, keys=None, outdir='./'):
-    """ Build a VRT from these assets """
-    if keys is None:
-        keys = scene.name_to_band.keys()
-    assets = [scene.asset(k) for k in keys]
-    filenames = [a['href'] for a in assets]
-    fout = os.path.join(outdir, scene.id + '.vrt')
-    gdal.BuildVRT(fout, filenames, separate=True, srcNodata=0)
-    geoimg = gippy.GeoImage(fout)
-    return geoimg
 
 
 def cli():
