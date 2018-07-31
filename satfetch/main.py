@@ -13,6 +13,7 @@ import gippy
 import gippy.algorithms as algs
 import satsearch.config as config
 from satsearch import Search, Scenes
+from satsearch.main import main as satsearch
 from satsearch.parser import SatUtilsParser
 from satsearch.scene import Scenes
 
@@ -53,34 +54,15 @@ def derived_stac_item(items):
     return item
 
 
-def main(scenes=None, review=False, print_md=None, print_cal=False,
-         save=None, append=False, download=None, **kwargs):
+def main(scenes=None, download=None, **kwargs):
     """ Main function for performing a search """
-    if scenes is None:
-        # get scenes from search
-        search = Search(**kwargs)
-        scenes = Scenes(search.scenes(), properties=kwargs)
-    else:
-        scenes = Scenes.load(scenes)
+    scenes = satsearch(scenes, download=None, **kwargs)
 
-    # print metadata
-    if print_md is not None:
-        scenes.print_scenes(print_md)
-
-    # print calendar
-    if print_cal:
-        print(scenes.text_calendar())
-
-    # save all metadata in JSON file
-    if save is not None:
-        scenes.save(filename=save, append=append)
-
-    print('%s scenes found' % len(scenes))
-
-    # download files given keys
+    # if not downloading nothing more to do
     if download is None:
         return
 
+    # check that there is a valid geometry for clipping
     feature = scenes.properties.get('intersects', {})
     if not feature:
         raise Exception('No geometry provided')
@@ -88,12 +70,10 @@ def main(scenes=None, review=False, print_md=None, print_cal=False,
         aoiname = f.name
         aoistr = json.dumps(feature)
         f.write(aoistr)
-    from pdb import set_trace
     geovec = gippy.GeoVector(aoiname)
 
-    #opts = {'COMPRESS': 'DEFLATE', 'PREDICTOR': '2', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
-    #opts = {'COMPRESS': 'LZW', 'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
-    opts = {'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
+    opts = {'COMPRESS': 'DEFLATE', 'PREDICTOR': '2', 'INTERLEAVE': 'BAND',
+            'TILED': 'YES', 'BLOCKXSIZE': '512', 'BLOCKYSIZE': '512'}
     for date in scenes.dates():
         _scenes = [s for s in scenes if s.date == date]
         # TODO - seperate out by platform
@@ -102,7 +82,6 @@ def main(scenes=None, review=False, print_md=None, print_cal=False,
         fname = _scenes[0].get_filename()
         # TODO - do not hardcode tif 
         fout = os.path.join(path, fname + '.tif')
-        gippy.Options.set_verbose(5)
         if not os.path.exists(fout):
             try:
                 with tempfile.TemporaryDirectory() as outdir:
@@ -118,13 +97,23 @@ def main(scenes=None, review=False, print_md=None, print_cal=False,
                 print('Error: ', str(err))
 
 
+
+
+
+def fetch():
+    """ This fetches data from just the AOI and clips it """
+    pass
+
+
+
 def open_image(scene, keys=None, download=False):
-    print('opening image')
+    """ Open these asset keys from scene as a gippy GeoImage """
     if keys is None:
         keys = scene.name_to_band.keys()
+    logger.debug('Opening scene %s (%s)' % (scene.id, ','.join(keys)))
     assets = [scene.asset(k) for k in keys]
     filenames = [a['href'].replace('https:/', '/vsicurl/https:/') for a in assets]
-    geoimg = gippy.GeoImage.open(filenames)
+    geoimg = gippy.GeoImage.open(filenames, update=False)
     geoimg.set_nodata(0)
     if download:
         # download scenes first
