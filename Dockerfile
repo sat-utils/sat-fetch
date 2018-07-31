@@ -13,4 +13,4 @@ RUN \
     pip3 install . -v; \
     rm -rf /build/*;
 
-WORKDIR /home/geolambda
+WORKDIR /home/geolambda/work

@@ -6,8 +6,8 @@ services:
     build:
       context: .
     image: 'developmentseed/sat-fetch:latest'
-    entrypoint: /bin/bash
     #env_file: .env
+    entrypoint: /bin/bash
     volumes:
       - '.:/home/geolambda/work'
 
