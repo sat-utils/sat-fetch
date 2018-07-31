@@ -8,9 +8,9 @@ RUN \
     pip3 install -r requirements-dev.txt
 
 # install app
-#COPY . /build
-#RUN \
-#    pip install . -v; \
-#    rm -rf /build/*;
+COPY . /build
+RUN \
+    pip3 install . -v; \
+    rm -rf /build/*;
 
 WORKDIR /home/geolambda
