@@ -4,5 +4,12 @@ Sat-fetch is a Python 2/3 library and command line tool for fetching, warping, a
 
 Sat-fetch provides all the same functionality as sat-search, except has some additional features that require the use of GDAL and other libraries (sat-search is very lightweight requiring nothing but the Python `requests` library).
 
+
+## Using sat-fetch
+
+
+$ docker run --rm -v $PWD:/home/geolambda/work -it developmentseed/sat-fetch:latest sat-fetch -h
+
+
 ## About
 sat-search was created by [Development Seed](<http://developmentseed.org>) and is part of a collection of tools called [sat-utils](https://github.com/sat-utils).
