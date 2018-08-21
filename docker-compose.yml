@@ -13,7 +13,8 @@ services:
 
   test:
     image: 'developmentseed/sat-fetch:latest'
-    entrypoint: bash -c 'pytest test/'
+    entrypoint: bash -c 'pytest -v test/'
+    working_dir: /home/geolambda
     #env_file: .env
     volumes:
       - './test:/home/geolambda/test'
