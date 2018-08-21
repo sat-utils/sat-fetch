@@ -30,7 +30,7 @@ def fetch(scenes, assets, geovector, basename='image'):
     }
 
     if os.path.exists(fout):
-        return gippy.GeoImage(fout)
+        return derived_scene
     try:
         geoimgs = []
         for s in scenes:
