@@ -40,8 +40,6 @@ def main(scenes=None, save=None, download=None, **kwargs):
     if download is None:
         return
 
-    import pdb; pdb.set_trace()
-
     # check that there is a valid geometry for clipping
     feature = scenes.properties.get('intersects', {})
     if not feature:
@@ -55,6 +53,7 @@ def main(scenes=None, save=None, download=None, **kwargs):
     derived_scenes = []
     # for each date, combine scenes
     for date in scenes.dates():
+        print('Processing files for %s' % date)
         _scenes = [s for s in scenes if s.date == date]
         # TODO - split out by user specified metadata (e.g., platform, collection)
         scene = fetch(_scenes, download, geovec[0])
