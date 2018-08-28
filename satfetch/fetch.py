@@ -57,7 +57,7 @@ def open_image(scene, keys=None, download=False):
             parts = a['href'].replace('https://', '').split('/')
             bucket = parts[0].replace('.s3.amazonaws.com', '')
             key = '/'.join(parts[1:])
-            filenames.append('/vsis3/%s%s' % (bucket, key))
+            filenames.append('/vsis3/%s/%s' % (bucket, key))
         else:
             filenames.append(a['href'].replace('https:/', '/vsicurl/https:/'))
     geoimg = gippy.GeoImage.open(filenames, update=False)
