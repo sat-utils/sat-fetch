@@ -53,13 +53,16 @@ def open_image(scene, keys=None, download=False):
     assets = [scene.asset(k) for k in keys]
     filenames = []
     for a in assets:
+        url = a['href']
         if 's3.amazonaws.com' in a['href']:
-            parts = a['href'].replace('https://', '').split('/')
+            for v in ['https://', 'http://']:
+                url = url.replace(v, '')
+            parts = url.split('/')
             bucket = parts[0].replace('.s3.amazonaws.com', '')
             key = '/'.join(parts[1:])
             filenames.append('/vsis3/%s/%s' % (bucket, key))
         else:
-            filenames.append(a['href'].replace('https:/', '/vsicurl/https:/'))
+            filenames.append(url.replace('https:/', '/vsicurl/https:/'))
     geoimg = gippy.GeoImage.open(filenames, update=False)
     geoimg.set_nodata(0)
     if download:
