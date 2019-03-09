@@ -32,7 +32,7 @@ setup(
     ],
     keywords='',
     entry_points={
-        'console_scripts': ['sat-fetch=satfetch.main:cli'],
+        'console_scripts': ['sat-fetch=satfetch.cli:cli'],
     },
     packages=find_packages(exclude=['docs', 'tests*']),
     include_package_data=True,
