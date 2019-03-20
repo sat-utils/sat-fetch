@@ -6,7 +6,7 @@ services:
     build:
       context: .
     image: 'developmentseed/sat-fetch:latest'
-    #env_file: .env
+    env_file: .env
     entrypoint: /bin/bash
     volumes:
       - '.:/home/geolambda/work'
@@ -15,6 +15,6 @@ services:
     image: 'developmentseed/sat-fetch:latest'
     entrypoint: bash -c 'pytest -v test/'
     working_dir: /home/geolambda
-    #env_file: .env
+    env_file: .env
     volumes:
       - './test:/home/geolambda/test'
