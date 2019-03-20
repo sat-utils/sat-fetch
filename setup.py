@@ -16,7 +16,7 @@ install_requires = [x.strip() for x in all_reqs if 'git+' not in x]
 dependency_links = [x.strip().replace('git+', '') for x in all_reqs if 'git+' not in x]
 
 setup(
-    name='satfetch',
+    name='sat-fetch',
     author='Matthew Hanson',
     author_email='matt.a.hanson@gmail.com',
     version=__version__,
