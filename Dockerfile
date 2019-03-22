@@ -1,4 +1,4 @@
-FROM developmentseed/geolambda:1.1.0rc3-python36
+FROM developmentseed/geolambda:1.1.0-python36
 
 # install requirements
 WORKDIR /build
