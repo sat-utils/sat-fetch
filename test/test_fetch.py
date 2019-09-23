@@ -1,10 +1,10 @@
-from unittest import TestCase
-
+import os
 import os.path as op
 
+from satsearch import config
 from satfetch import fetch, open_image
 from satstac import ItemCollection
-from pdb import set_trace
+from unittest import TestCase
 
 testpath = op.dirname(__file__)
 
@@ -23,6 +23,8 @@ class Test(TestCase):
 
     def test_fetch(self):
         items = self.get_items()
-        
-        derived_item = fetch(items, items._search.get('parameters', {}).get('intersects', {}))
+        bands = ['qa']
+        config.DATADIR = ''
+        config.FILENAME = os.path.join(testpath, 'test_fetch/${collection}_${date}')
+        new_items = fetch(items, items._search.get('parameters', {}).get('intersects', {}), bands)
 

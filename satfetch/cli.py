@@ -50,7 +50,7 @@ def main(items=None, fetch=None, save=None, **kwargs):
         print('Processing files for %s' % date)
         _items = [s for s in items if s.date == date]
         # TODO - split out by user specified metadata (e.g., platform, collection)
-        item = satfetch(_items, feature['geometry'], keys=fetch)
+        item = satfetch(_items, feature['geometry'], fetch)
         derived_items.append(item)
 
     # this needs update to sat-stac to support adding metadata to Items
