@@ -9,11 +9,10 @@ import tempfile
 from .version import __version__
 import gippy
 
+from satstac import Collection, Item, ItemCollection
 import satsearch.config as config
 from satsearch import Search
-from satsearch.main import main as satsearch
-from satsearch.parser import SatUtilsParser
-from satstac import Collection, Item, Items
+from satsearch.cli import SatUtilsParser, main as satsearch
 from satfetch import fetch as satfetch
 
 
@@ -41,16 +40,9 @@ def main(items=None, fetch=None, save=None, **kwargs):
         return
     
     # check that there is a valid geometry for clipping
-    feature = items._search.get('intersects', None)
+    feature = items._search.get('parameters', {}).get('intersects', None)
     if feature is None:
         raise Exception('No geometry provided')
-
-    # create temporary geometry file
-    with tempfile.NamedTemporaryFile(suffix='.geojson', mode='w', delete=False) as f:
-        aoiname = f.name
-        aoistr = json.dumps(feature)
-        f.write(aoistr)
-    geovec = gippy.GeoVector(aoiname)
 
     derived_items = []
     # for each date, combine scenes
@@ -58,9 +50,8 @@ def main(items=None, fetch=None, save=None, **kwargs):
         print('Processing files for %s' % date)
         _items = [s for s in items if s.date == date]
         # TODO - split out by user specified metadata (e.g., platform, collection)
-        item = satfetch(_items, geovec[0], keys=fetch)
+        item = satfetch(_items, feature['geometry'], keys=fetch)
         derived_items.append(item)
-        break
 
     # this needs update to sat-stac to support adding metadata to Items
     # see https://github.com/sat-utils/sat-stac/issues/39
@@ -69,10 +60,10 @@ def main(items=None, fetch=None, save=None, **kwargs):
     #}
     
     col = Collection.create()
-    col.data['id'] = 'sat-fetch'
-    col.data['description'] = 'Fetch items created by sat-fetch'
-    col.data['links'].append({'rel': 'about', 'href': 'https://github.com/sat-utils/sat-fetch'})
-    derived_items = Items(derived_items, collections=[col])
+    col._data['id'] = 'sat-fetch'
+    col._data['description'] = 'Fetch items created by sat-fetch'
+    col._data['links'].append({'rel': 'about', 'href': 'https://github.com/sat-utils/sat-fetch'})
+    derived_items = ItemCollection(derived_items, collections=[col])
     if save is not None:
         derived_items.save(save)
     return derived_items
