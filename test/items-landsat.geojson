@@ -2399,10 +2399,9 @@
         }
     ],
     "search": {
-        "intersects": {
-            "type": "Feature",
-            "properties": {},
-            "geometry": {
+        "endpoint": "https://sat-api.developmentseed.org",
+        "parameters": {
+            "intersects": {
                 "type": "Polygon",
                 "coordinates": [
                     [
@@ -2428,13 +2427,9 @@
                         ]
                     ]
                 ]
-            }
-        },
-        "query": {
-            "collection": {
-                "eq": "landsat-8-l1"
-            }
-        },
-        "time": "2019-01-01/2019-01-31"
+            },
+            "collections": ["landsat-8-l1"],
+            "datetime": "2019-01-01/2019-01-31"
+        }
     }
 }
