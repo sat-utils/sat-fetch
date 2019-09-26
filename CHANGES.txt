@@ -1,5 +1,0 @@
-1.0.0:
-- Updated to work with v1+ of sat-search (STAC compliant)
-
-0.1.0:
-- initial release

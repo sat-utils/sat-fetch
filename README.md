@@ -16,9 +16,11 @@ $ docker fetch sat-utils/sat-fetch:latest
 
 ## Using sat-fetch
 
-The sat-fetch Command Line Interface (CLI) can be used just as [sat-search](https://github.com/sat-utils/sat-search)
+The sat-fetch Command Line Interface (CLI) can be used just as the [sat-search](https://github.com/sat-utils/sat-search) CLI:
 
 $ docker run --rm -v $PWD:/home/geolambda/work -it sat-utils/sat-fetch:latest sat-fetch -h
+
+with the only difference being the addition of a new argument to the CLI, `fetch`. Whereas `download` downloads the original file as is, `fetch` only gets the area of the image within the `intersects` AOI, clips the output image to to the AOI, and stacks all the bands desired into a single file.
 
 
 ## Development
