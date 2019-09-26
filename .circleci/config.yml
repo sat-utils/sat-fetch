@@ -7,9 +7,6 @@
 
 version: 2
 
-
-references:
-
 references:
   restore_repo: &restore_repo
     restore_cache:
