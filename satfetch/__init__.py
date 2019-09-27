@@ -1,1 +1,1 @@
-from satfetch.fetch import fetch
+from satfetch.fetch import *

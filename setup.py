@@ -16,7 +16,7 @@ install_requires = [x.strip() for x in all_reqs if 'git+' not in x]
 dependency_links = [x.strip().replace('git+', '') for x in all_reqs if 'git+' not in x]
 
 setup(
-    name='satfetch',
+    name='sat-fetch',
     author='Matthew Hanson',
     author_email='matt.a.hanson@gmail.com',
     version=__version__,
@@ -32,7 +32,7 @@ setup(
     ],
     keywords='',
     entry_points={
-        'console_scripts': ['sat-fetch=satfetch.main:cli'],
+        'console_scripts': ['sat-fetch=satfetch.cli:cli'],
     },
     packages=find_packages(exclude=['docs', 'tests*']),
     include_package_data=True,

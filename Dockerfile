@@ -1,16 +1,16 @@
-FROM developmentseed/geolambda:1.0.0
+FROM developmentseed/geolambda:1.1.0-python36
 
 # install requirements
 WORKDIR /build
 COPY requirements*txt /build/
 RUN \
-    pip3 install -r requirements.txt; \
-    pip3 install -r requirements-dev.txt
+    pip install -r requirements.txt; \
+    pip install -r requirements-dev.txt
 
 # install app
 COPY . /build
 RUN \
-    pip3 install . -v; \
+    pip install . -v; \
     rm -rf /build/*;
 
-WORKDIR /home/geolambda/work
+WORKDIR /home/geolambda
