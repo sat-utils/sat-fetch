@@ -37,7 +37,7 @@ jobs:
       - run:
           name: Test Docker image
           command: |
-            docker run -it satutils/sat-fetch:latest pytest -v -s --cov satfetch --cov-report term-missing
+            docker run -v ${PWD}:/home/geolambda -it satutils/sat-fetch:latest pytest -v -s --cov satfetch --cov-report term-missing
 
   docker_deploy:
     machine:
