@@ -79,14 +79,14 @@ def create_derived_item(items, geometry):
 
 
 
-def fetch(items, geometry, keys, proj=None, res=None):
+def fetch(items, geometry, keys, path=config.DATADIR, filename=config.FILENAME, proj=None, res=None):
     """ This fetches data from just the AOI and clips it """
     derived_item = create_derived_item(items, geometry)
 
     bands = []
     for k in keys:
         bands += items[0].asset(k).get('eo:bands', [])
-    filename = items[0].get_filename(path=config.DATADIR, filename=config.FILENAME).replace('.json','.tif')
+    filename = items[0].get_filename(path=path, filename=filename).replace('.json','.tif')
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     derived_item._data['assets'] = {
