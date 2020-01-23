@@ -1,2 +1,3 @@
-sat-search~=0.2.2
+git+git://github.com/sat-utils/sat-search@0.3.0-b1
+#sat-search~=0.3.0a1
 gippy~=1.0.3
