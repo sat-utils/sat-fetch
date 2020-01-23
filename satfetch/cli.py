@@ -40,8 +40,8 @@ def main(items=None, fetch=None, save=None, **kwargs):
         return
     
     # check that there is a valid geometry for clipping
-    feature = items._search.get('parameters', {}).get('intersects', None)
-    if feature is None:
+    aoi = items._search.get('parameters', {}).get('intersects', None)
+    if aoi is None:
         raise Exception('No geometry provided')
 
     derived_items = []
@@ -50,7 +50,7 @@ def main(items=None, fetch=None, save=None, **kwargs):
         print('Processing files for %s' % date)
         _items = [s for s in items if s.date == date]
         # TODO - split out by user specified metadata (e.g., platform, collection)
-        item = satfetch(_items, feature['geometry'], fetch)
+        item = satfetch(_items, aoi, fetch)
         derived_items.append(item)
 
     # this needs update to sat-stac to support adding metadata to Items

@@ -55,7 +55,6 @@ def create_derived_item(items, geometry):
                 'rel': 'derived_from',
                 'href': selflink[0]
             })
-    print(geometry)
     lons = [c[0] for c in geometry['coordinates'][0]]
     lats = [c[1] for c in geometry['coordinates'][0]]
     bbox = [min(lons), min(lats), max(lons), max(lats)]
@@ -93,8 +92,8 @@ def fetch(items, geometry, keys, path=config.DATADIR, filename=config.FILENAME, 
         'image': {
             'type': 'image/vnd.stac.geotiff; cloud-optimized=true',
             'title': 'Clipped image',
-            'href': filename,
-            'eo:bands': bands
+            'href': filename #,
+            #'eo:bands': bands
         }
     }
 
