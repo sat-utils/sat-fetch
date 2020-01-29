@@ -85,7 +85,7 @@ def fetch(items, geometry, keys, path=config.DATADIR, filename=config.FILENAME, 
     bands = []
     for k in keys:
         bands += items[0].asset(k).get('eo:bands', [])
-    filename = items[0].get_filename(path=path, filename=filename).replace('.json','.tif')
+    filename = items[0].get_path(os.path.join(path, filename.replace('.json','.tif')))
     os.makedirs(os.path.dirname(filename), exist_ok=True)
 
     derived_item._data['assets'] = {
