@@ -67,7 +67,7 @@ def create_derived_item(items, geometry):
         props['collection'] = collections[0]
     item = {
         'type': 'Feature',
-        'id': '%s_%s' % (items[0]['eo:platform'], items[0].date),
+        'id': '%s_%s' % (items[0]._data['collection'], items[0].date),
         'bbox': bbox,
         'geometry': geometry,
         'properties': props,
@@ -78,15 +78,17 @@ def create_derived_item(items, geometry):
 
 
 
-def fetch(items, geometry, keys, path=config.DATADIR, filename=config.FILENAME, proj=None, res=None):
+def fetch(items, geometry, keys, filename_template='${collection}/${id}', proj=None, res=None):
     """ This fetches data from just the AOI and clips it """
     derived_item = create_derived_item(items, geometry)
 
     bands = []
     for k in keys:
         bands += items[0].asset(k).get('eo:bands', [])
-    filename = items[0].get_path(os.path.join(path, filename.replace('.json','.tif')))
-    os.makedirs(os.path.dirname(filename), exist_ok=True)
+    filename = os.path.splitext(items[0].get_path(filename_template))[0] + '.tif'
+    path  = os.path.dirname(filename)
+    if len(path) > 0:
+        os.makedirs(path, exist_ok=True)
 
     derived_item._data['assets'] = {
         'image': {
@@ -96,6 +98,8 @@ def fetch(items, geometry, keys, path=config.DATADIR, filename=config.FILENAME, 
             #'eo:bands': bands
         }
     }
+
+    print(derived_item._data)
 
     if os.path.exists(filename):
         return derived_item
